@@ -15,8 +15,6 @@ public class SetGesturePasswordActivity extends Activity {
 	private TextView gestureExplainText;
 	private LockPatternThumbailView lockPatternThumbail;
 	private LockPatternView lockPatternView;
-	private TextView forgetGesturePasswordText;
-	private TextView useOtherAccoutLoginText;
 	private String gesturePassword;
 
 	private LockPatternView.OnPatternListener setListener = new LockPatternView.OnPatternListener() {
@@ -73,8 +71,6 @@ public class SetGesturePasswordActivity extends Activity {
 		gestureExplainText = (TextView) findViewById(R.id.gestureExplainText);
 		lockPatternThumbail = (LockPatternThumbailView) findViewById(R.id.lockPatternThumbail);
 		lockPatternView = (LockPatternView) findViewById(R.id.lockPatternView);
-		forgetGesturePasswordText = (TextView) findViewById(R.id.forgetGesturePasswordText);
-		useOtherAccoutLoginText = (TextView) findViewById(R.id.useOtherAccoutLoginText);
 		lockPatternView.setDiameterFactor(0.1f);
 		lockPatternView.setTactileFeedbackEnabled(true);
 		lockPatternView.setOnPatternListener(setListener);

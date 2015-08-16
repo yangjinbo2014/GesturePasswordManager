@@ -13,6 +13,9 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+/**
+ * 使用密码控件时，在app初始化时调用 GesturePasswordManager.getInstance().startWatch(getApplication());即可实现自动锁屏
+ */
 public class GesturePasswordManager {
 
 	public static final String GESTURE_PASSWORD_LOCAL_KEY = "gesture_password";
@@ -26,7 +29,7 @@ public class GesturePasswordManager {
 	static GesturePasswordManager instance;
 
 	/**
-	 * 无操作后的显示锁屏的时间（ms）
+	 * 无操作后锁屏时间
 	 */
 	private final static int SHOW_GESTURE_DELAY = 1000  * 5;
 
@@ -91,7 +94,7 @@ public class GesturePasswordManager {
 			@Override
 			public void onActivityResumed(Activity activity) {
 				mCurActivity = activity;
-				if (activity instanceof SecurityGesture) {
+				if (activity instanceof ISecurityGesture) {
 					if (showGestureImmediately) {
 						showGesturePasswordActivity();
 					} else {
@@ -140,7 +143,7 @@ public class GesturePasswordManager {
 		this.showGestureImmediately = showGestureImmediately;
 	}
 
-	// ����������ܺ�洢��SharedPreferences��
+	// 手势密码加密后存储到SharedPreferences里
 	protected void saveGesturePassword(Context context, String password) {
 		SharedPreferences sp = context.getSharedPreferences(
 				context.getPackageName(), Context.MODE_PRIVATE);
@@ -148,7 +151,7 @@ public class GesturePasswordManager {
 		StringBuilder encryptPassword = new StringBuilder(HEADER);
 		encryptPassword.append(password);
 
-		// ��������ִ�����ÿ�εļ��ܽ������һ��
+		// 加入随机字串，让每次的加密结果都不一样
 		if (encryptPassword.length() < PASSWORD_LENGTH) {
 			String randomString = Util.getRandomString(PASSWORD_LENGTH
 					- encryptPassword.length());
@@ -157,14 +160,14 @@ public class GesturePasswordManager {
 
 		String result = null;
 		try {
-			// ��Կ��Ҫ�����豸��Ӳ����Ϣ����ֹ�ط�
+			// 密钥需要加入设备的硬件信息，防止重放
 			result = AESUtil.encrypt(imei + HEADER + password,
 					encryptPassword.toString());
 		} catch (Exception e) {
-			// AES����ʧ�ܣ���ȡmd5ֵ
+			// AES加密失败，就取md5值
 			result = Md5Generator.generate(imei + HEADER + password);
 		}
-		// ��sp�б����keyʹ����Ӧ��md5ֵ���������ױ�¶��key�������ݵ�����
+		// 在sp中保存的key使用相应的md5值，以免轻易暴露此key保存内容的作用
 		String saveKey = Md5Generator.generate(GESTURE_PASSWORD_LOCAL_KEY);
 		if (saveKey.length() > 64) {
 			saveKey = saveKey.substring(0, 64);
@@ -182,14 +185,14 @@ public class GesturePasswordManager {
 		}
 		String encryptPassword = sp.getString(saveKey, "");
 		if (TextUtils.isEmpty(encryptPassword)) {
-			// δ������������ֱ�ӷ���false
+			// 未保存手势密码直接返回false
 			return false;
 		}
 
 		String imei = Util.getDeviceIMEI(context);
 
 		String passwordMd5 = Md5Generator.generate(imei + HEADER + password);
-		// ������������MD5�뱣��Ľ��һ����˵�����õ�ʱ��AES����ʧ���ˣ�����������������MD5ֵ������MD5һ��������true.
+		// 如果手势密码的MD5与保存的结果一样，说明设置的时候AES加密失败了，保存的是手势密码的MD5值，两个MD5一样，返回true.
 		if (passwordMd5.equals(encryptPassword)) {
 			return true;
 		}
@@ -200,17 +203,16 @@ public class GesturePasswordManager {
 		} catch (Exception e) {
 		}
 
-		// δ���ܳ����������false
+		// 未解密出结果，返回false
 		if (TextUtils.isEmpty(result)) {
 			return false;
 		}
 
-		// ���������ȷ�����ܽ��Ӧ������ HEADER + gesture password + random���.
+		// 如果解密正确，解密结果应该是由 HEADER + gesture password + random组成.
 		if (result.startsWith(HEADER + password)) {
 			return true;
 		}
 
 		return false;
 	}
-
 }

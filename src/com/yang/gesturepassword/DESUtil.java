@@ -17,7 +17,6 @@ import javax.crypto.spec.IvParameterSpec;
  */
 public class DESUtil {
  
-    private static final String KEY = "********************";
      
     /**
      * 对字符串进行DES3加密
@@ -58,7 +57,7 @@ public class DESUtil {
      *            密钥
      * @param data
      *            明文
-     * @return Base64编码的密�?
+     * @return Base64编码的密�?
      * @throws Exception
      */
     public static byte[] des3EncodeECB(byte[] key, byte[] data)
@@ -79,7 +78,7 @@ public class DESUtil {
      * @param key
      *            密钥
      * @param data
-     *            Base64编码的密�?
+     *            Base64编码的密�?
      * @return 明文
      * @throws Exception
      */
@@ -104,7 +103,7 @@ public class DESUtil {
      *            IV
      * @param data
      *            明文
-     * @return Base64编码的密�?
+     * @return Base64编码的密�?
      * @throws Exception
      */
     public static byte[] des3EncodeCBC(byte[] key, byte[] keyiv, byte[] data)
@@ -128,7 +127,7 @@ public class DESUtil {
      * @param keyiv
      *            IV
      * @param data
-     *            Base64编码的密�?
+     *            Base64编码的密�?
      * @return 明文
      * @throws Exception
      */

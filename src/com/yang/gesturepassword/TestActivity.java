@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.widget.TextView;
 
-public class TestActivity extends Activity implements SecurityGesture {
+public class TestActivity extends Activity implements ISecurityGesture {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
