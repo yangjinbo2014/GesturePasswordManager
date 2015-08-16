@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">GesturePassword</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="set_lockpattern">设置手势密码</string>
+    <string name="set_lockpatter_again">再次绘制图案确认</string>
+    <string name="confirm">确定</string>
+    <string name="input_gesture_password">请输入手势密码</string>
+
+</resources>
